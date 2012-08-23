@@ -4,7 +4,7 @@ require File.expand_path('../lib/chozo/version', __FILE__)
 Gem::Specification.new do |s|
   s.authors       = ["Jamie Winsor"]
   s.email         = ["jamie@vialstudios.com"]
-  s.description   = %q{TODO: A collection of supporting libraries and Ruby core extensions}
+  s.description   = %q{A collection of supporting libraries and Ruby core extensions}
   s.summary       = s.description
   s.homepage      = "https://github.com/reset/chozo"
 
