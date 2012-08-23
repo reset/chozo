@@ -51,7 +51,7 @@ module Chozo
       def save(destination = self.path)
         FileUtils.mkdir_p(File.dirname(destination))
         File.open(destination, 'w+') do |f|
-          f.puts self.to_json
+          f.write(self.to_json)
         end
       end
     end

@@ -49,10 +49,10 @@ describe Chozo::Config::JSON do
       let(:file) { tmp_path.join("test_config.json").to_s }
 
       before(:each) do
-        File.write(file, json)
+        File.open(file, "w") { |f| f.write(json) }
       end
 
-      it "returns an instance of MB::Config" do
+      it "returns an instance of the including class" do
         subject.from_file(file).should be_a(TestJSONConfig)
       end
 
@@ -61,7 +61,7 @@ describe Chozo::Config::JSON do
       end
 
       context "given a file that does not exist" do
-        it "raises a MB::ConfigNotFound error" do
+        it "raises a Chozo::Errors::ConfigNotFound error" do
           lambda {
             subject.from_file(tmp_path.join("asdf.txt"))
           }.should raise_error(Chozo::Errors::ConfigNotFound)
