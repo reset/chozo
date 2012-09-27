@@ -56,7 +56,7 @@ module Chozo
     #
     # @return [Object]
     def attribute(key)
-      instance_variable_get("@#{key}") || self.class.defaults[key]
+      instance_variable_get("@#{key}") || self.class.defaults[key.to_sym]
     end
     alias_method :[], :attribute
 
