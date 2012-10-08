@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.version       = Chozo::VERSION
   s.required_ruby_version = ">= 1.9.1"
 
+  s.add_runtime_dependency 'activesupport'
   s.add_runtime_dependency 'activemodel'
   s.add_runtime_dependency 'multi_json', '>= 1.3.0'
 
