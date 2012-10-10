@@ -57,5 +57,21 @@ describe Hash do
         subject.dig("nothing.is.here").should be_nil
       end
     end
+
+    context "when the Hash contains symbols for keys" do
+      subject do
+        {
+          we: {
+            found: {
+              something: :symbol_value
+            }
+          }
+        }
+      end
+
+      it "returns the value at the dotted path" do
+        subject.dig("we.found.something").should eql(:symbol_value)
+      end
+    end
   end
 end
