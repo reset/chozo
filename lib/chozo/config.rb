@@ -2,6 +2,7 @@ require 'active_model'
 require 'chozo/errors'
 
 module Chozo
+  # @author Jamie Winsor <jamie@vialstudios.com>
   module Config
     autoload :JSON, 'chozo/config/json'
 

@@ -1,3 +1,4 @@
+# @author Jamie Winsor <jamie@vialstudios.com>
 module Chozo
   autoload :Config, 'chozo/config'
   autoload :Errors, 'chozo/errors'

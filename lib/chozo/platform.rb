@@ -1,6 +1,7 @@
 require 'rbconfig'
 
 module Chozo
+  # @author Jamie Winsor <jamie@vialstudios.com>
   module Platform
     module ClassMethods
       # @return [Boolean]

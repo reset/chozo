@@ -2,6 +2,7 @@ require 'multi_json'
 
 module Chozo
   module Config
+    # @author Jamie Winsor <jamie@vialstudios.com>
     module JSON
       extend ActiveSupport::Concern
       include Chozo::Config

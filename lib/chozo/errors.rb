@@ -1,4 +1,5 @@
 module Chozo
+  # @author Jamie Winsor <jamie@vialstudios.com>
   module Errors
     class ChozoError < StandardError; end
     class ConfigNotFound < ChozoError; end

@@ -1,4 +1,5 @@
 module Chozo
+  # @author Jamie Winsor <jamie@vialstudios.com>
   module RubyEngine
     module ClassMethods
       # @return [Boolean]
