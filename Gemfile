@@ -2,6 +2,10 @@ source :rubygems
 
 gemspec
 
+platforms :jruby do
+  gem 'json-jruby'
+end
+
 group :development do
   gem 'yard'
   gem 'spork'
