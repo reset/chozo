@@ -19,18 +19,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'activesupport'
   s.add_runtime_dependency 'activemodel'
   s.add_runtime_dependency 'multi_json', '>= 1.3.0'
-
-  s.add_development_dependency 'thor'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'fuubar'
-  s.add_development_dependency 'spork'
-  s.add_development_dependency 'yard'
-  s.add_development_dependency 'guard'
-  s.add_development_dependency 'guard-rspec'
-  s.add_development_dependency 'guard-spork'
-  s.add_development_dependency 'guard-yard'
-  s.add_development_dependency 'coolline'
-  s.add_development_dependency 'redcarpet'
-  s.add_development_dependency 'json_spec'
 end
