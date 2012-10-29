@@ -1,4 +1,5 @@
 script: "bundle exec thor spec"
+bundler_args: --without development
 language: ruby
 rvm:
   - 1.9.2
