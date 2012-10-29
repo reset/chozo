@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'bundler'
-require 'spork'
+require 'chozo/core_ext'
 
-Spork.prefork do
+def setup_rspec
   require 'rspec'
   require 'json_spec'
 
@@ -23,6 +23,17 @@ Spork.prefork do
   end
 end
 
-Spork.each_run do
+if mri?
+  require 'spork'
+
+  Spork.prefork do
+    setup_rspec
+  end
+
+  Spork.each_run do
+    require 'chozo'
+  end
+else
   require 'chozo'
+  setup_rspec
 end
