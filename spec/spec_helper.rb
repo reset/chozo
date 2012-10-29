@@ -23,7 +23,7 @@ def setup_rspec
   end
 end
 
-if mri? && ENV['CI'] == 'true'
+if mri? && ENV['CI'] != 'true'
   require 'spork'
 
   Spork.prefork do
