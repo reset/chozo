@@ -2,11 +2,18 @@ source :rubygems
 
 gemspec
 
+platforms :jruby do
+  gem 'json-jruby'
+end
+
 group :development do
-  gem 'thor'
   gem 'yard'
+  gem 'spork'
   gem 'guard'
   gem 'guard-yard'
+  gem 'guard-rspec'
+  gem 'guard-spork', platforms: :ruby
+  gem 'coolline'
   gem 'redcarpet'
 
   require 'rbconfig'
@@ -31,12 +38,9 @@ group :development do
 end
 
 group :test do
+  gem 'thor'
   gem 'rake', '>= 0.9.2.2'
-  gem 'spork'
   gem 'rspec'
   gem 'fuubar'
-  gem 'guard-rspec'
-  gem 'guard-spork', platforms: :ruby
   gem 'json_spec'
-  gem 'coolline'
 end

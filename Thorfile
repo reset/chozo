@@ -5,25 +5,28 @@ require 'bundler'
 require 'bundler/setup'
 
 require 'chozo'
-require 'thor/rake_compat'
 
 class Default < Thor
-  include Thor::RakeCompat
-  Bundler::GemHelper.install_tasks
+  unless jruby?
+    require 'thor/rake_compat'
+    
+    include Thor::RakeCompat
+    Bundler::GemHelper.install_tasks
 
-  desc "build", "Build chozo-#{Chozo::VERSION}.gem into the pkg directory"
-  def build
-    Rake::Task["build"].execute
-  end
+    desc "build", "Build chozo-#{Chozo::VERSION}.gem into the pkg directory"
+    def build
+      Rake::Task["build"].execute
+    end
 
-  desc "install", "Build and install chozo-#{Chozo::VERSION}.gem into system gems"
-  def install
-    Rake::Task["install"].execute
-  end
+    desc "install", "Build and install chozo-#{Chozo::VERSION}.gem into system gems"
+    def install
+      Rake::Task["install"].execute
+    end
 
-  desc "release", "Create tag v#{Chozo::VERSION} and build and push chozo-#{Chozo::VERSION}.gem to Rubygems"
-  def release
-    Rake::Task["release"].execute
+    desc "release", "Create tag v#{Chozo::VERSION} and build and push chozo-#{Chozo::VERSION}.gem to Rubygems"
+    def release
+      Rake::Task["release"].execute
+    end
   end
 
   class Spec < Thor
