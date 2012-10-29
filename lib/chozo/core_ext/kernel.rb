@@ -1,7 +1,6 @@
-require 'chozo/platform'
-
 module Kernel
   include Chozo::Platform
+  include Chozo::RubyEngine
 end
 
 class Object
