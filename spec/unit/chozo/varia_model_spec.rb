@@ -38,12 +38,6 @@ describe Chozo::VariaModel do
         subject.validations.should have(1).item
       end
 
-      it "adds a coercion if the :coerce option is provided" do
-        subject.attribute 'brooke.winsor', coerce: lambda { |m| m.to_s }
-
-        subject.coercions.should have(1).item
-      end
-
       it "sets a default value if :default option is provided" do
         subject.attribute 'brooke.winsor', default: 'rhode island'
 
@@ -58,16 +52,6 @@ describe Chozo::VariaModel do
 
       it "is empty by default" do
         subject.validations.should be_empty
-      end
-    end
-
-    describe "::coercions" do
-      it "returns a HashWithIndifferentAccess" do
-        subject.coercions.should be_a(HashWithIndifferentAccess)
-      end
-
-      it "is empty by default" do
-        subject.coercions.should be_empty
       end
     end
   end

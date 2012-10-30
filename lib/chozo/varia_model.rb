@@ -22,14 +22,6 @@ module Chozo
         self.validations[name] ||= Array.new
       end
 
-      def coercions
-        @coercions ||= HashWithIndifferentAccess.new
-      end
-
-      def coercion_for(name)
-        self.coercions.dig(name)
-      end
-
       # @param [#to_s] name
       # @option options [Symbol, Array<Symbol>] :type
       # @option options [Boolean] :required
@@ -95,18 +87,10 @@ module Chozo
             new_attributes = Hashie::Mash.from_dotted_path(name, options[:default])
             self.attributes.merge!(new_attributes)
           end
-
-          if options[:coerce]
-            register_coercion(name, options[:coerce])
-          end
         end
 
         def register_validation(name, fun)
           self.validations[name] = (self.validations_for(name) << fun)
-        end
-
-        def register_coercion(name, fun)
-          self.coercions[name] = fun
         end
 
         def define_mimic_methods(name, options = {})
