@@ -127,11 +127,6 @@ module Chozo
       end
     end
 
-    # @param [#to_hash] new_attributes
-    def initialize(new_attributes = {})
-      self.attributes.merge!(Hashie::Mash.new(new_attributes.to_hash))
-    end
-
     # @return [HashWithIndifferentAccess]
     def attributes
       @attributes ||= self.class.attributes.dup
