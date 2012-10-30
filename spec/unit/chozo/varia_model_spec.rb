@@ -6,7 +6,7 @@ describe Chozo::VariaModel do
       Class.new do
         include Chozo::VariaModel
       end
-    end    
+    end
 
     describe "::attributes" do
       it "returns a Hashie::Mash" do
@@ -52,6 +52,153 @@ describe Chozo::VariaModel do
 
       it "is empty by default" do
         subject.validations.should be_empty
+      end
+    end
+
+    describe "::validations_for" do
+      context "when an attribute is registered and has validations" do
+        before(:each) do
+          subject.attribute("nested.attribute", required: true, type: String)
+        end
+
+        it "returns an array of procs" do
+          validations = subject.validations_for("nested.attribute")
+
+          validations.should be_a(Array)
+          validations.should each be_a(Proc)
+        end
+      end
+
+      context "when an attribute is registered but has no validations" do
+        before(:each) do
+          subject.attribute("nested.attribute")
+        end
+
+        it "returns an empty array" do
+          validations = subject.validations_for("nested.attribute")
+
+          validations.should be_a(Array)
+          validations.should be_empty
+        end
+      end
+
+      context "when an attribute is not registered" do
+        it "returns an empty array" do
+          validations = subject.validations_for("not_existing.attribute")
+
+          validations.should be_a(Array)
+          validations.should be_empty
+        end
+      end
+    end
+
+    describe "::validate_kind_of" do
+      let(:types) do
+        [
+          String,
+          Boolean
+        ]
+      end
+
+      let(:key) do
+        'nested.one'
+      end
+
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          attribute 'nested.one', types: [String, Boolean]
+        end
+      end
+
+      let(:model) do
+        subject.new
+      end
+
+      it "returns an array" do
+        subject.validate_kind_of(types, model, key).should be_a(Array)
+      end
+
+      context "failure" do
+        before(:each) do
+          model.nested.one = nil
+        end
+
+        it "returns an array where the first element is ':error'" do
+          subject.validate_kind_of(types, model, key).first.should eql(:error)
+        end
+
+        it "returns an array where the second element is an error message containing the attribute and types" do
+          types.each do |type|
+            subject.validate_kind_of(types, model, key)[1].should =~ /#{type}/
+          end
+          subject.validate_kind_of(types, model, key)[1].should =~ /#{key}/
+        end
+      end
+
+      context "success" do
+        before(:each) do
+          model.nested.one = true
+        end
+
+        it "returns an array where the first element is ':ok'" do
+          subject.validate_kind_of(types, model, key).first.should eql(:ok)
+        end
+
+        it "returns an array where the second element is a blank string" do
+          subject.validate_kind_of(types, model, key)[1].should be_blank
+        end
+      end
+    end
+
+    describe "::validate_required" do
+      let(:key) do
+        'nested.one'
+      end
+
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          attribute 'nested.one', required: true
+        end
+      end
+
+      let(:model) do
+        subject.new
+      end
+
+      it "returns an array" do
+        subject.validate_required(model, key).should be_a(Array)
+      end
+
+      context "failure" do
+        before(:each) do
+          model.nested.one = nil
+        end
+
+        it "returns an array where the first element is ':error'" do
+          subject.validate_required(model, key).first.should eql(:error)
+        end
+
+        it "returns an array where the second element is an error message containing the attribute name" do
+          subject.validate_required(model, key)[1].should =~ /#{key}/
+        end
+      end
+
+      context "success" do
+        before(:each) do
+          model.nested.one = "hello"
+        end
+
+        it "returns an array where the first element is ':ok'" do
+          subject.validate_required(model, key).first.should eql(:ok)
+        end
+
+        it "returns an array where the second element is a blank string" do
+          subject.validate_required(model, key)[1].should be_blank
+        end
       end
     end
   end

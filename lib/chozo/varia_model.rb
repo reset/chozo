@@ -17,13 +17,6 @@ module Chozo
         @validations ||= HashWithIndifferentAccess.new
       end
 
-      # @param [String] name
-      #
-      # @return [Array]
-      def validations_for(name)
-        self.validations[name] ||= Array.new
-      end
-
       # @param [#to_s] name
       # @option options [Symbol, Array<Symbol>] :type
       # @option options [Boolean] :required
@@ -33,6 +26,13 @@ module Chozo
         register_attribute(name, options)
 
         define_mimic_methods(name, options)
+      end
+
+      # @param [String] name
+      #
+      # @return [Array]
+      def validations_for(name)
+        self.validations[name] ||= Array.new
       end
 
       # @param [Constant, Array<Constant>] types
@@ -105,10 +105,6 @@ module Chozo
           fun_name = name.split('.').first
           
           class_eval do
-            define_method :attributes do
-              instance_variable_get("@attributes") || instance_variable_set("@attributes", self.class.attributes.dup)
-            end
-
             define_method fun_name do
               self.attributes[fun_name]
             end
@@ -138,9 +134,9 @@ module Chozo
     end
 
     # @return [HashWithIndifferentAccess]
-    # def attributes
-    #   @attributes ||= self.class.attributes.dup
-    # end
+    def attributes
+      @attributes ||= self.class.attributes.dup
+    end
 
     # @return [HashWithIndifferentAccess]
     def validate
