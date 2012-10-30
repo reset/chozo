@@ -21,9 +21,9 @@ module Chozo
       # @option options [Object] :default
       # @option options [Proc] :coerce
       def attribute(name, options = {})
-        register_attribute(name, options)
+        register_attribute(name.to_s, options)
 
-        define_mimic_methods(name, options)
+        define_mimic_methods(name.to_s, options)
       end
 
       # @param [String] name
@@ -101,20 +101,34 @@ module Chozo
 
         def define_mimic_methods(name, options = {})
           fun_name = name.split('.').first
-          
-          class_eval do
-            define_method fun_name do
-              self.attributes[fun_name]
-            end
 
-            define_method "#{fun_name}=" do |value|
-              value = if options[:coerce].is_a?(Proc)
-                options[:coerce].call(value)
-              else
-                value
+          if options[:dsl_mimics]
+            class_eval do
+              define_method fun_name do |value|
+                value = if options[:coerce].is_a?(Proc)
+                  options[:coerce].call(value)
+                else
+                  value
+                end
+
+                self.attributes[fun_name] = value
+              end
+            end
+          else
+            class_eval do
+              define_method fun_name do
+                self.attributes[fun_name]
               end
 
-              self.attributes[fun_name] = value
+              define_method "#{fun_name}=" do |value|
+                value = if options[:coerce].is_a?(Proc)
+                  options[:coerce].call(value)
+                else
+                  value
+                end
+
+                self.attributes[fun_name] = value
+              end
             end
           end
         end
@@ -134,6 +148,10 @@ module Chozo
     # @return [HashWithIndifferentAccess]
     def attributes
       @attributes ||= self.class.attributes.dup
+    end
+
+    def attributes=(hash)
+      @attributes = Hashie::Mash.new(hash.to_hash)
     end
 
     # @return [HashWithIndifferentAccess]

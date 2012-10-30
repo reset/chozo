@@ -355,4 +355,26 @@ describe Chozo::VariaModel do
       end
     end
   end
+
+  describe "DSL Mimics" do
+    context "given an attribute with the :dsl_mimics set to true" do
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          attribute :person, dsl_mimics: true
+        end.new
+      end
+
+      it "generates a 'DSL' setter instead of a getter" do
+        subject.person('reset')
+
+        subject.attributes['person'].should eql('reset')
+      end
+
+      it "does not generate a setter with a '='" do
+        subject.should_not respond_to(:person=)
+      end
+    end
+  end
 end
