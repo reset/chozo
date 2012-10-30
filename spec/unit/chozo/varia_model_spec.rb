@@ -121,6 +121,41 @@ describe Chozo::VariaModel do
         subject.coerced.should eql('1')
       end
     end
+
+    context "given two nested attributes with a common parent and default values" do
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          attribute 'nested.one', default: 'val_one'
+          attribute 'nested.two', default: 'val_two'
+        end.new
+      end
+
+      it "sets a default value for each nested attribute" do
+        subject.nested.one.should eql('val_one')
+        subject.nested.two.should eql('val_two')
+      end
+    end
+
+    context "given two nested attributes with a common parent and coercions" do
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          attribute 'nested.one', coerce: lambda { |m| m.to_s }
+          attribute 'nested.two', coerce: lambda { |m| m.to_s }
+        end.new
+      end
+
+      it "coerces each value if both have a coercion" do
+        subject.nested.one = 1
+        subject.nested.two = 2
+
+        subject.nested.one.should eql("1")
+        subject.nested.two.should eql("2")
+      end
+    end
   end
 
   describe "Validations" do

@@ -1,5 +1,5 @@
 require 'chozo/core_ext'
-require 'hashie'
+require 'chozo/hashie_ext'
 
 module Chozo
   # @author Jamie Winsor <jamie@vialstudios.com>
@@ -17,6 +17,8 @@ module Chozo
         @validations ||= HashWithIndifferentAccess.new
       end
 
+      # @param [String] name
+      #
       # @return [Array]
       def validations_for(name)
         self.validations[name] ||= Array.new
@@ -26,9 +28,7 @@ module Chozo
       # @option options [Symbol, Array<Symbol>] :type
       # @option options [Boolean] :required
       # @option options [Object] :default
-      # @option options [Proc] :coercion
-      #
-      # @return [Hash]
+      # @option options [Proc] :coerce
       def attribute(name, options = {})
         register_attribute(name, options)
 
@@ -86,6 +86,10 @@ module Chozo
           class_eval do
             new_attributes = Hashie::Mash.from_dotted_path(name, options[:default])
             self.attributes.merge!(new_attributes)
+            
+            if options[:coerce].is_a?(Proc)
+              register_coercion(name, options[:coerce])
+            end
           end
         end
 
@@ -93,15 +97,19 @@ module Chozo
           self.validations[name] = (self.validations_for(name) << fun)
         end
 
+        def register_coercion(name, fun)
+          self.attributes.container(name).set_coercion(name.split('.').last, fun)
+        end
+
         def define_mimic_methods(name, options = {})
           fun_name = name.split('.').first
           
           class_eval do
-            define_method fun_name do
-              if options[:coerce].is_a?(Proc)
-                self.attributes.container(name).coercion = options[:coerce]
-              end
+            define_method :attributes do
+              instance_variable_get("@attributes") || instance_variable_set("@attributes", self.class.attributes.dup)
+            end
 
+            define_method fun_name do
               self.attributes[fun_name]
             end
 
@@ -130,9 +138,9 @@ module Chozo
     end
 
     # @return [HashWithIndifferentAccess]
-    def attributes
-      @attributes ||= self.class.attributes.dup
-    end
+    # def attributes
+    #   @attributes ||= self.class.attributes.dup
+    # end
 
     # @return [HashWithIndifferentAccess]
     def validate
