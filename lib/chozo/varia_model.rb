@@ -21,8 +21,9 @@ module Chozo
       # @option options [Object] :default
       # @option options [Proc] :coerce
       def attribute(name, options = {})
-        register_attribute(name, options)
+        name = name.to_s
 
+        register_attribute(name, options)
         define_mimic_methods(name, options)
       end
 
