@@ -4,8 +4,6 @@ require 'chozo/hashie_ext'
 module Chozo
   # @author Jamie Winsor <jamie@vialstudios.com>
   module VariaModel
-    autoload :JSON, 'chozo/varia_model/json'
-
     module ClassMethods
       # @return [HashWithIndifferentAccess]
       def attributes
