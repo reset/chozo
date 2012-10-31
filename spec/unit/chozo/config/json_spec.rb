@@ -1,18 +1,6 @@
 require 'spec_helper'
-require 'shared_examples/chozo/config'
-
-TestJSONConfig = Class.new do
-  include Chozo::Config::JSON
-
-  attribute :name
-  validates_presence_of :name
-
-  attribute :job
-end
 
 describe Chozo::Config::JSON do
-  it_behaves_like "Chozo::Config", TestJSONConfig
-
   let(:json) do
     %(
       {
@@ -24,10 +12,15 @@ describe Chozo::Config::JSON do
   end
 
   describe "ClassMethods" do
-    subject { TestJSONConfig }
+    subject do
+      Class.new(Chozo::Config::JSON) do
+        attribute :name, required: true
+        attribute :job
+      end
+    end
 
     describe "::from_json" do
-      it "returns an instance of the including class" do
+      it "returns an instance of the inheriting class" do
         subject.from_json(json).should be_a(subject)
       end
 
@@ -52,8 +45,8 @@ describe Chozo::Config::JSON do
         File.open(file, "w") { |f| f.write(json) }
       end
 
-      it "returns an instance of the including class" do
-        subject.from_file(file).should be_a(TestJSONConfig)
+      it "returns an instance of the inheriting class" do
+        subject.from_file(file).should be_a(subject)
       end
 
       it "sets the object's filepath to the path of the loaded file" do
@@ -70,7 +63,12 @@ describe Chozo::Config::JSON do
     end
   end
 
-  subject { TestJSONConfig.new }
+  subject do
+    Class.new(Chozo::Config::JSON) do
+      attribute :name, required: true
+      attribute :job
+    end.new
+  end
 
   describe "#to_json" do
     before(:each) do
@@ -90,7 +88,7 @@ describe Chozo::Config::JSON do
 
   describe "#from_json" do
     it "returns an instance of the updated class" do
-      subject.from_json(json).should be_a(subject.class)
+      subject.from_json(json).should be_a(Chozo::Config::JSON)
     end
 
     it "assigns values for each defined attribute" do
