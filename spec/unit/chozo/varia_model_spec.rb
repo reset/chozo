@@ -375,6 +375,10 @@ describe Chozo::VariaModel do
         end.new
       end
 
+      before(:each) do
+        subject.brooke.winsor = false
+      end
+
       it "returns false if it fails validation" do
         subject.should_not be_valid
       end
@@ -384,7 +388,7 @@ describe Chozo::VariaModel do
 
         subject.errors.should have(1).item
         subject.errors['brooke.winsor'].should have(1).item
-        subject.errors['brooke.winsor'][0].should eql("Expected attribute: 'brooke.winsor' to be a type of: 'String'")
+        subject.errors['brooke.winsor'][0].should eql("Expected attribute: 'brooke.winsor' to be a type of: 'String', 'NilClass'")
       end
     end
   end

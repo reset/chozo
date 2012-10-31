@@ -77,6 +77,9 @@ module Chozo
 
         def register_attribute(name, options = {})
           if options[:type] && options[:type].any?
+            unless options[:required]
+              options[:type] << NilClass
+            end
             register_validation(name, lambda { |object, key| validate_kind_of(options[:type], object, key) })
           end
 
