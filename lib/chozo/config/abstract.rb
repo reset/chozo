@@ -28,12 +28,8 @@ module Chozo
 
       protected
 
-        def mass_assign(attributes = {})
-          attributes.each do |key, value|
-            if respond_to?("#{key}=")
-              self.send("#{key}=", value)
-            end
-          end
+        def mass_assign(new_attributes = {})
+          attributes.deep_merge!(new_attributes)
         end
     end
   end

@@ -4,5 +4,6 @@ module Chozo
     class ChozoError < StandardError; end
     class ConfigNotFound < ChozoError; end
     class InvalidConfig < ChozoError; end
+    class ConfigSaveError < ChozoError; end
   end
 end

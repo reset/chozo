@@ -48,6 +48,10 @@ module Chozo
       end
 
       def save(destination = self.path)
+        if destination.nil?
+          raise Errors::ConfigSaveError, "Cannot save configuration without a destination. Provide one to save or set one on the object."
+        end
+
         FileUtils.mkdir_p(File.dirname(destination))
         File.open(destination, 'w+') do |f|
           f.write(self.to_json(pretty: true))

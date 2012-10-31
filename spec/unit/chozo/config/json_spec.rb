@@ -30,12 +30,6 @@ describe Chozo::Config::JSON do
         config[:name].should eql("reset")
         config[:job].should eql("programmer")
       end
-
-      it "does not set an attribute value for undefined attributes" do
-        config = subject.from_json(json)
-
-        config[:status].should be_nil
-      end
     end
 
     describe "::from_file" do
@@ -94,14 +88,18 @@ describe Chozo::Config::JSON do
     it "assigns values for each defined attribute" do
       config = subject.from_json(json)
 
-      config[:name].should eql("reset")
-      config[:job].should eql("programmer")
+      config.name.should eql("reset")
+      config.job.should eql("programmer")
     end
+  end
 
-    it "does not set an attribute value for undefined attributes" do
-      config = subject.from_json(json)
+  describe "#save" do
+    it "raises a ConfigSaveError if no path is set or given" do
+      subject.path = nil
 
-      config[:status].should be_nil
+      lambda {
+        subject.save
+      }.should raise_error(Chozo::Errors::ConfigSaveError)
     end
   end
 end
