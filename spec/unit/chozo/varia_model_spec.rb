@@ -150,6 +150,39 @@ describe Chozo::VariaModel do
           subject.validate_kind_of(types, model, key)[1].should be_blank
         end
       end
+
+      context "when given two types of the same kind" do
+        let(:types) do
+          [
+            String,
+            String
+          ]
+        end
+
+        let(:key) do
+          'nested.one'
+        end
+
+        subject do
+          Class.new do
+            include Chozo::VariaModel
+
+            attribute 'nested.one', types: [String, Boolean]
+          end
+        end
+
+        let(:model) do
+          subject.new
+        end
+
+        before(:each) do
+          model.nested.one = nil
+        end
+
+        it "returns a error message that contains the type error only once" do
+          subject.validate_kind_of(types, model, key)[1].should eql("Expected attribute: 'nested.one' to be a type of: 'String'")
+        end
+      end
     end
 
     describe "::validate_required" do

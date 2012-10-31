@@ -22,6 +22,8 @@ module Chozo
       # @option options [Proc] :coerce
       def attribute(name, options = {})
         name = name.to_s
+        options[:type] = Array(options[:type])
+        options[:required] ||= false
 
         register_attribute(name, options)
         define_mimic_methods(name, options)
@@ -41,7 +43,7 @@ module Chozo
       # @return [Array]
       def validate_kind_of(types, model, key)
         errors  = Array.new
-        types   = Array(types)
+        types   = types.uniq
         matches = false
 
         types.each do |type|
@@ -74,7 +76,7 @@ module Chozo
       private
 
         def register_attribute(name, options = {})
-          if options[:type]
+          if options[:type] && options[:type].any?
             register_validation(name, lambda { |object, key| validate_kind_of(options[:type], object, key) })
           end
 
