@@ -1,13 +1,11 @@
+require 'chozo/errors'
 require 'multi_json'
 
 module Chozo
   module Config
     # @author Jamie Winsor <jamie@vialstudios.com>
-    module JSON
-      extend ActiveSupport::Concern
-      include Chozo::Config
-
-      module ClassMethods
+    class JSON < Config::Abstract
+      class << self
         # @param [String] data
         #
         # @return [~Chozo::Config::JSON]
@@ -43,7 +41,7 @@ module Chozo
       #
       # @return [~Chozo::Config::JSON]
       def from_json(json, options = {})
-        self.attributes = MultiJson.decode(json, options)
+        mass_assign(MultiJson.decode(json, options))
         self
       rescue MultiJson::DecodeError => e
         raise Chozo::Errors::InvalidConfig, e
@@ -52,7 +50,7 @@ module Chozo
       def save(destination = self.path)
         FileUtils.mkdir_p(File.dirname(destination))
         File.open(destination, 'w+') do |f|
-          f.write(self.to_json)
+          f.write(self.to_json(pretty: true))
         end
       end
     end
