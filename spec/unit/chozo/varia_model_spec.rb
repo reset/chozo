@@ -392,4 +392,45 @@ describe Chozo::VariaModel do
       end
     end
   end
+
+  describe "#set_attribute" do
+    subject do
+      Class.new do
+        include Chozo::VariaModel
+
+        attribute 'brooke.winsor', type: String, default: 'sister'
+        attribute 'brooke.costantini', type: String, default: 'sister'
+      end.new
+    end
+
+    it "sets the value of the given attribute" do
+      subject.set_attribute('brooke.winsor', 'rhode island')
+
+      subject.brooke.winsor.should eql('rhode island')
+    end
+
+    it "does not disturb the other attributes" do
+      subject.set_attribute('brooke.winsor', 'rhode island')
+
+      subject.brooke.costantini.should eql('sister')
+    end
+  end
+
+  describe "#get_attribute" do
+    subject do
+      Class.new do
+        include Chozo::VariaModel
+
+        attribute 'brooke.winsor', type: String, default: 'sister'
+      end.new
+    end
+
+    it "returns the value of the given dotted path" do
+      subject.get_attribute('brooke.winsor').should eql('sister')
+    end
+
+    it "returns nil if the dotted path matches no attributes" do
+      subject.get_attribute('brooke.costantini').should be_nil
+    end
+  end
 end
