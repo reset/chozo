@@ -74,4 +74,45 @@ describe Hash do
       end
     end
   end
+
+  describe "#dotted_paths" do
+    it "returns an array" do
+      subject.dotted_paths.should be_a(Array)
+    end
+
+    context "given a hash with only top level keys" do
+      subject do
+        {
+          "one" => "val",
+          "two" => "val"
+        }
+      end
+
+      it "returns an array of the top level keys as strings" do
+        subject.dotted_paths.should eql(["one", "two"])
+      end
+    end
+
+    context "given a hash with nested keys" do
+      subject do
+        {
+          "one" => {
+            "nested" => {
+              "attribute" => "hello"
+            }
+          },
+          "two" => {
+            "nested" => {
+              "attribute" => "other_hello",
+              "other_attr" => "world"
+            }
+          }
+        }
+      end
+
+      it "returns an array of dotted paths including the nested Hash keys" do
+        subject.dotted_paths.should eql(["one.nested.attribute", "two.nested.attribute", "two.nested.other_attr"])
+      end
+    end
+  end
 end

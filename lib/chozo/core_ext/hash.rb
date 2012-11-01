@@ -85,4 +85,26 @@ class Hash
       match.dig(parts[1])
     end
   end
+
+  # Returns an array of dotted paths from the keys, values of this Hash. Values which are
+  # nested Hashes will also recurred into and their paths will be added properly.
+  #
+  # @param [Hash] source
+  # @param [Array] acc
+  # @param [Array] namespace
+  #
+  # @return [Array<String>]
+  def dotted_paths(source = self, acc = Array.new, namespace = Array.new)
+    if source.is_a?(Hash)
+      source.each do |key, value|
+        branch = namespace.dup
+        branch << key
+        dotted_paths(value, acc, branch)
+      end
+    else
+      acc << namespace.join('.')
+    end
+
+    acc
+  end
 end
