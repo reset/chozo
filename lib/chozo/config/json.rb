@@ -19,6 +19,7 @@ module Chozo
         #
         # @return [~Chozo::Config::JSON]
         def from_file(path)
+          path = File.expand_path(path)
           data = File.read(path)
           new(path).from_json(data)
         rescue Errno::ENOENT, Errno::EISDIR
