@@ -61,15 +61,17 @@ module Chozo
         end
       end
 
+      # Validate that the attribute on the given model has a non-nil value assigned
+      #
       # @param [VariaModel] model
       # @param [String] key
       #
       # @return [Array]
       def validate_required(model, key)
-        if model.attributes.dig(key).present?
-          [ :ok, "" ]
-        else
+        if model.attributes.dig(key).nil?
           [ :error, "A value is required for attribute: '#{key}'" ]
+        else
+          [ :ok, "" ]
         end
       end
 
