@@ -206,6 +206,24 @@ describe Chozo::VariaModel do
         subject.validate_required(model, key).should be_a(Array)
       end
 
+      it "fails validation if the value of the attribute is nil" do
+        model.set_attribute(key, nil)
+        
+        subject.validate_required(model, key).first.should eql(:error)
+      end
+
+      it "passes validation if the value of the attribute is false", focus: true do
+        model.set_attribute(key, false)
+
+        subject.validate_required(model, key).first.should eql(:ok)
+      end
+
+      it "passes validation if the value of the attribute is not nil" do
+        model.set_attribute(key, 'some_value')
+
+        subject.validate_required(model, key).first.should eql(:ok)
+      end
+
       context "failure" do
         before(:each) do
           model.nested.one = nil
