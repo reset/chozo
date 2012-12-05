@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.description   = %q{A collection of supporting libraries and Ruby core extensions}
   s.summary       = s.description
   s.homepage      = "https://github.com/reset/chozo"
+  s.license       = "Apache 2.0"
 
   s.files         = `git ls-files`.split($\)
   s.executables   = s.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
