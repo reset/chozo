@@ -1,4 +1,3 @@
-require 'forwardable'
 require 'chozo/varia_model'
 
 module Chozo
@@ -24,6 +23,10 @@ module Chozo
 
       def []=(key, value)
         self.attributes[key] = value
+      end
+
+      def to_hash
+        self.attributes.to_hash(symbolize_keys: true)
       end
 
       protected

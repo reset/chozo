@@ -212,7 +212,7 @@ describe Chozo::VariaModel do
         subject.validate_required(model, key).first.should eql(:error)
       end
 
-      it "passes validation if the value of the attribute is false", focus: true do
+      it "passes validation if the value of the attribute is false" do
         model.set_attribute(key, false)
 
         subject.validate_required(model, key).first.should eql(:ok)
