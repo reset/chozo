@@ -102,4 +102,33 @@ describe Chozo::Config::JSON do
       }.should raise_error(Chozo::Errors::ConfigSaveError)
     end
   end
+
+  describe "#reload" do
+    before(:each) do
+      subject.path = tmp_path.join('tmpconfig.json').to_s
+      subject.save
+    end
+
+    it "returns self" do
+      subject.reload.should eql(subject)
+    end
+
+    it "updates the contents of self from disk" do
+      original = subject.class.from_file(subject.path)
+      subject.job = "programmer"
+      subject.save
+
+      original.job.should be_nil
+      original.reload
+      original.job.should eql("programmer")
+    end
+
+    it "raises ConfigNotFound if the path is nil" do
+      subject.path = nil
+
+      expect {
+        subject.reload.should eql(subject)
+      }.to raise_error(Chozo::Errors::ConfigNotFound)
+    end
+  end
 end

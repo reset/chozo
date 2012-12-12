@@ -22,7 +22,7 @@ module Chozo
           path = File.expand_path(path)
           data = File.read(path)
           new(path).from_json(data)
-        rescue Errno::ENOENT, Errno::EISDIR
+        rescue TypeError, Errno::ENOENT, Errno::EISDIR
           raise Chozo::Errors::ConfigNotFound, "No configuration found at: '#{path}'"
         end
       end
@@ -57,6 +57,14 @@ module Chozo
         File.open(destination, 'w+') do |f|
           f.write(self.to_json(pretty: true))
         end
+      end
+
+      # Reload the current configuration file from disk
+      #
+      # @return [Chozo::Config::JSON]
+      def reload
+        mass_assign(self.class.from_file(path).attributes)
+        self
       end
     end
   end
