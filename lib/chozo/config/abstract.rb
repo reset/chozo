@@ -26,7 +26,7 @@ module Chozo
       end
 
       def to_hash
-        self.attributes.to_hash(symbolize_keys: true)
+        self.attributes.to_hash.deep_symbolize_keys
       end
 
       protected
