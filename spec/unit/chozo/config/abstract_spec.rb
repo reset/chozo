@@ -15,4 +15,24 @@ describe Chozo::Config::Abstract do
       subject.to_hash[:something].should eql("value")
     end
   end
+
+  describe "#slice" do
+    before(:each) do
+      subject.attributes[:one] = {
+        nested: "value"
+      }
+      subject.attributes[:two] = {
+        nested: "other"
+      }
+      @sliced = subject.slice(:one)
+    end
+
+    it "returns a Hash" do
+      @sliced.should be_a(Hash)
+    end
+
+    it "contains just the sliced elements" do
+      @sliced.should have(1).item
+    end
+  end
 end
