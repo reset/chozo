@@ -5,9 +5,14 @@ module Chozo
     # @author Jamie Winsor <jamie@vialstudios.com>
     # @api private
     class Abstract
+      extend Forwardable
       include VariaModel
       
       attr_accessor :path
+
+      def_delegator :to_hash, :slice
+      def_delegator :to_hash, :slice!
+      def_delegator :to_hash, :extract!
 
       # @param [String] path
       # @param [Hash] attributes
