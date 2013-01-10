@@ -178,6 +178,7 @@ module Chozo
         set_attribute(dotted_path, value)
       end
     end
+    alias_method :attributes=, :mass_assign
 
     # @param [#to_s] key
     #
@@ -185,12 +186,14 @@ module Chozo
     def get_attribute(key)
       self.attributes.dig(key.to_s)
     end
+    alias_method :[], :get_attribute
 
     # @param [#to_s] key
     # @param [Object] value
     def set_attribute(key, value)
       self.attributes.deep_merge!(attributes.class.from_dotted_path(key.to_s, value))
     end
+    alias_method :[]=, :set_attribute
 
     protected
 
