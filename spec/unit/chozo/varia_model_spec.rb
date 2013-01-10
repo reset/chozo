@@ -451,4 +451,54 @@ describe Chozo::VariaModel do
       subject.get_attribute('brooke.costantini').should be_nil
     end
   end
+
+  describe "#mass_assign" do
+    subject do
+      Class.new do
+        include Chozo::VariaModel
+
+        attribute 'brooke.winsor', type: String, default: 'sister'
+        attribute 'jamie.winsor', type: String, default: 'brother'
+        attribute 'gizmo', type: String, default: 'dog'
+      end.new
+    end
+
+    it "sets the values of all matching defined attributes" do
+      new_attrs = {
+        brooke: {
+          winsor: "other"
+        },
+        jamie: {
+          winsor: "other_two"
+        }
+      }
+
+      subject.mass_assign(new_attrs)
+      subject.brooke.winsor.should eql("other")
+      subject.jamie.winsor.should eql("other_two")
+    end
+
+    it "leaves the values of untouched attributes" do
+      new_attrs = {
+        brooke: {
+          winsor: "other"
+        },
+        jamie: {
+          winsor: "other_two"
+        }
+      }
+
+      subject.mass_assign(new_attrs)
+      subject.gizmo.should eql("dog")
+    end
+
+    it "ignores values which are not defined attributes" do
+      new_attrs = {
+        undefined_attribute: "value"
+      }
+
+      subject.mass_assign(new_attrs)
+      subject.should_not respond_to(:undefined_attribute)
+    end
+  end
 end

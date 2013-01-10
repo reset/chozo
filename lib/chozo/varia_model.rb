@@ -170,6 +170,15 @@ module Chozo
       @errors ||= HashWithIndifferentAccess.new
     end
 
+    def mass_assign(new_attrs = {})
+      attributes.dotted_paths.each do |dotted_path|
+        value = new_attrs.dig(dotted_path)
+        next if value.nil?
+
+        set_attribute(dotted_path, value)
+      end
+    end
+
     # @param [#to_s] key
     #
     # @return [Object]
