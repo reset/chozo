@@ -93,6 +93,19 @@ describe Hash do
       end
     end
 
+    context "given a hash with empty hashes as values" do
+      subject do
+        {
+          "one" => Hash.new,
+          "two" => Hash.new
+        }
+      end
+
+      it "returns an array of the top level keys as strings" do
+        subject.dotted_paths.should eql(["one", "two"])
+      end
+    end
+
     context "given a hash with nested keys" do
       subject do
         {

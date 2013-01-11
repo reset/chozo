@@ -170,18 +170,30 @@ module Chozo
       @errors ||= HashWithIndifferentAccess.new
     end
 
+    def mass_assign(new_attrs = {})
+      attributes.dotted_paths.each do |dotted_path|
+        value = new_attrs.dig(dotted_path)
+        next if value.nil?
+
+        set_attribute(dotted_path, value)
+      end
+    end
+    alias_method :attributes=, :mass_assign
+
     # @param [#to_s] key
     #
     # @return [Object]
     def get_attribute(key)
       self.attributes.dig(key.to_s)
     end
+    alias_method :[], :get_attribute
 
     # @param [#to_s] key
     # @param [Object] value
     def set_attribute(key, value)
       self.attributes.deep_merge!(attributes.class.from_dotted_path(key.to_s, value))
     end
+    alias_method :[]=, :set_attribute
 
     protected
 

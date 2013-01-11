@@ -32,6 +32,10 @@ if mri? && ENV['CI'] != 'true'
 
   Spork.each_run do
     require 'chozo'
+
+    Dir["#{Chozo.app_root}/lib/chozo/core_ext/**/*.rb"].each do |ext|
+      load(ext)
+    end
   end
 else
   require 'chozo'

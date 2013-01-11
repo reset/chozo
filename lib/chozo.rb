@@ -5,6 +5,15 @@ module Chozo
   autoload :Platform, 'chozo/platform'
   autoload :RubyEngine, 'chozo/ruby_engine'
   autoload :VariaModel, 'chozo/varia_model'
+
+  class << self
+    # Path to the root directory of the Chozo application
+    #
+    # @return [Pathname]
+    def app_root
+      @app_root ||= Pathname.new(File.expand_path('../', File.dirname(__FILE__)))
+    end
+  end
 end
 
 require 'chozo/core_ext'

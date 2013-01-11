@@ -95,7 +95,7 @@ class Hash
   #
   # @return [Array<String>]
   def dotted_paths(source = self, acc = Array.new, namespace = Array.new)
-    if source.is_a?(Hash)
+    if source.is_a?(Hash) && !source.empty?
       source.each do |key, value|
         branch = namespace.dup
         branch << key
