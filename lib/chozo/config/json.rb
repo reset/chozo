@@ -1,5 +1,5 @@
 require 'chozo/errors'
-require 'multi_json'
+require 'chozo/varia_model'
 
 module Chozo
   module Config
@@ -27,23 +27,13 @@ module Chozo
         end
       end
 
-      # @param (see MultiJson.encode) options
-      #
-      # @return [String]
-      def to_json(options = {})
-        MultiJson.encode(self.attributes, options)
-      end
-      alias_method :as_json, :to_json
-
-      # @param (see MultiJson.decode) json
-      # @param (see MultiJson.decode) options
+      # @see {VariaModel#from_json}
       #
       # @raise [Chozo::Errors::InvalidConfig]
       #
-      # @return [~Chozo::Config::JSON]
-      def from_json(json, options = {})
-        mass_assign(MultiJson.decode(json, options))
-        self
+      # @return [Chozo::Config::JSON]
+      def from_json(*args)
+        super
       rescue MultiJson::DecodeError => e
         raise Chozo::Errors::InvalidConfig, e
       end

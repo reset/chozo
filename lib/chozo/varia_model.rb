@@ -1,3 +1,4 @@
+require 'multi_json'
 require 'chozo/core_ext'
 require 'chozo/hashie_ext'
 

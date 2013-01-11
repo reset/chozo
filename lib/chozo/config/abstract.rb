@@ -22,23 +22,9 @@ module Chozo
         mass_assign(attributes)
       end
 
-      def [](key)
-        self.attributes[key]
-      end
-
-      def []=(key, value)
-        self.attributes[key] = value
-      end
-
       def to_hash
         self.attributes.to_hash.deep_symbolize_keys
       end
-
-      protected
-
-        def mass_assign(new_attributes = {})
-          attributes.deep_merge!(new_attributes)
-        end
     end
   end
 end
