@@ -48,7 +48,7 @@ describe Hash do
       end
 
       it "returns the value at the dotted path" do
-        subject.dig("we.found.something").should be_true
+        subject.dig("we.found.something").should eql(true)
       end
     end
 
@@ -76,6 +76,16 @@ describe Hash do
 
     it "returns nil if given a blank string" do
       subject.dig("").should be_nil
+    end
+
+    it "returns 'false' nested values as 'false' and not 'nil'" do
+      hash = {
+        "ssl" => {
+          "verify" => false
+        }
+      }
+      
+      hash.dig('ssl.verify').should eql(false)
     end
   end
 

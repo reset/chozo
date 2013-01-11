@@ -80,7 +80,7 @@ class Hash
     return nil unless path.present?
 
     parts = path.split('.', 2)
-    match = (self[parts[0].to_s] || self[parts[0].to_sym])
+    match = self[parts[0].to_s].nil? ? self[parts[0].to_sym] : self[parts[0].to_s]
     if !parts[1] or match.nil?
       match
     else
