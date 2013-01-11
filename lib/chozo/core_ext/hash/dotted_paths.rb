@@ -77,6 +77,8 @@ class Hash
   #
   # @return [Object, nil]
   def dig(path)
+    return nil unless path.present?
+
     parts = path.split('.', 2)
     match = (self[parts[0].to_s] || self[parts[0].to_sym])
     if !parts[1] or match.nil?
