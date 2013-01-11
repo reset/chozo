@@ -73,6 +73,10 @@ describe Hash do
         subject.dig("we.found.something").should eql(:symbol_value)
       end
     end
+
+    it "returns nil if given a blank string" do
+      subject.dig("").should be_nil
+    end
   end
 
   describe "#dotted_paths" do
