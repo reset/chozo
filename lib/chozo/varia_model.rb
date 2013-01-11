@@ -195,6 +195,35 @@ module Chozo
     end
     alias_method :[]=, :set_attribute
 
+    # @param [#to_hash] hash
+    #
+    # @return [self]
+    def from_hash(hash)
+      mass_assign(hash.to_hash)
+      self
+    end
+
+    # @param [String] data
+    #
+    # @return [self]
+    def from_json(data)
+      mass_assign(MultiJson.decode(data))
+      self
+    end
+
+    # @return [Hash]
+    def to_hash
+      self.attributes
+    end
+
+    # @param [Hash] options
+    #   an options hash to pass to MultiJson.encode
+    #
+    # @return [String]
+    def to_json(options = {})
+      MultiJson.encode(self.attributes, options)
+    end
+
     protected
 
       # @param [String] attribute

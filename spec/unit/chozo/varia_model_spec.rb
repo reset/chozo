@@ -501,4 +501,72 @@ describe Chozo::VariaModel do
       subject.should_not respond_to(:undefined_attribute)
     end
   end
+
+  describe "#from_json" do
+    subject do
+      Class.new do
+        include Chozo::VariaModel
+
+        attribute 'first_name', type: String
+        attribute 'nick', type: String
+      end.new
+    end
+
+    it "returns self" do
+      subject.from_json(MultiJson.encode(first_name: "jamie", nick: "reset")).should be_a(described_class)
+    end
+
+    it "updates self from JSON data" do
+      subject.from_json(MultiJson.encode(first_name: "jamie", nick: "reset"))
+
+      subject.first_name.should eql("jamie")
+      subject.nick.should eql("reset")
+    end
+  end
+
+  describe "#from_hash" do
+    subject do
+      Class.new do
+        include Chozo::VariaModel
+
+        attribute 'first_name', type: String
+        attribute 'nick', type: String
+      end.new
+    end
+
+    it "returns self" do
+      subject.from_hash(first_name: "jamie", nick: "reset").should be_a(described_class)
+    end
+
+    it "updates and returns self from a Hash" do
+      subject.from_hash(first_name: "jamie", nick: "reset")
+
+      subject.first_name.should eql("jamie")
+      subject.nick.should eql("reset")
+    end
+  end
+
+  describe "#to_json" do
+    subject do
+      Class.new do
+        include Chozo::VariaModel
+
+        attribute 'first_name', type: String
+        attribute 'nick', type: String
+      end.new
+    end
+
+    it "returns a JSON string containin the serialized attributes" do
+      subject.first_name = "brooke"
+      subject.nick = "leblanc"
+
+      subject.to_json.should eql(MultiJson.encode(first_name: "brooke", nick: "leblanc"))
+    end
+  end
+
+  describe "#to_hash" do
+    it "returns the attributes" do
+      subject.to_hash.should eql(subject.attributes)
+    end
+  end
 end
