@@ -6,6 +6,11 @@ module Chozo
   # @author Jamie Winsor <jamie@vialstudios.com>
   module VariaModel
     module ClassMethods
+      ASSIGNMENT_MODES = [
+        :whitelist,
+        :carefree
+      ]
+
       # @return [HashWithIndifferentAccess]
       def attributes
         @attributes ||= Hashie::Mash.new
@@ -14,6 +19,26 @@ module Chozo
       # @return [HashWithIndifferentAccess]
       def validations
         @validations ||= HashWithIndifferentAccess.new
+      end
+
+      # @return [Symbol]
+      def assignment_mode
+        @assignment_mode ||= :whitelist
+      end
+
+      # Set the attribute mass assignment mode
+      #   * :whitelist - only attributes defined on the class will have values set
+      #   * :carefree  - values will be set for attributes that are not explicitly defined
+      #                  in the class definition 
+      #
+      # @param [Symbol] mode
+      #   an assignment mode to use @see {ASSIGNMENT_MODES}
+      def set_assignment_mode(mode)
+        unless ASSIGNMENT_MODES.include?(mode)
+          raise ArgumentError, "unknown assignment mode: #{mode}"
+        end
+
+        @assignment_mode = mode
       end
 
       # @param [#to_s] name
@@ -172,11 +197,11 @@ module Chozo
     end
 
     def mass_assign(new_attrs = {})
-      attributes.dotted_paths.each do |dotted_path|
-        value = new_attrs.dig(dotted_path)
-        next if value.nil?
-
-        set_attribute(dotted_path, value)
+      case self.class.assignment_mode
+      when :whitelist
+        whitelist_assign(new_attrs)
+      when :carefree
+        carefree_assign(new_attrs)
       end
     end
     alias_method :attributes=, :mass_assign
@@ -233,6 +258,21 @@ module Chozo
       def add_error(attribute, message)
         self.errors[attribute] ||= Array.new
         self.errors[attribute] << message
-      end    
+      end
+
+    private
+
+      def carefree_assign(new_attrs = {})
+        attributes.deep_merge!(new_attrs)
+      end
+
+      def whitelist_assign(new_attrs = {})
+        attributes.dotted_paths.each do |dotted_path|
+          value = new_attrs.dig(dotted_path)
+          next if value.nil?
+
+          set_attribute(dotted_path, value)
+        end
+      end
   end
 end

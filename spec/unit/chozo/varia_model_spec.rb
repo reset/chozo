@@ -90,6 +90,32 @@ describe Chozo::VariaModel do
           validations.should be_empty
         end
       end
+
+      describe "#assignment_mode" do
+        it "returns the default assignment mode :whitelist" do
+          subject.assignment_mode.should eql(:whitelist)
+        end
+      end
+
+      describe "#set_assignment_mode" do
+        it "sets the assignment_mode to whitelist" do
+          subject.set_assignment_mode(:whitelist)
+
+          subject.assignment_mode.should eql(:whitelist)
+        end
+
+        it "sets the assignment_mode to carefree" do
+          subject.set_assignment_mode(:carefree)
+
+          subject.assignment_mode.should eql(:carefree)
+        end
+
+        it "raises if given an invalid assignment mode" do
+          expect {
+            subject.set_assignment_mode(:not_a_real_mode)
+          }.to raise_error(ArgumentError)
+        end
+      end
     end
 
     describe "::validate_kind_of" do
@@ -498,7 +524,27 @@ describe Chozo::VariaModel do
       }
 
       subject.mass_assign(new_attrs)
+      subject.attributes[:undefined_attribute].should be_nil
       subject.should_not respond_to(:undefined_attribute)
+    end
+
+    context "when in carefree assignment mode" do
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          set_assignment_mode :carefree
+        end.new
+      end
+
+      it "does not ignore values which are not defined" do
+        new_attrs = {
+          undefined_attribute: "value"
+        }
+
+        subject.mass_assign(new_attrs)
+        subject.attributes[:undefined_attribute].should eql("value")
+      end
     end
   end
 
