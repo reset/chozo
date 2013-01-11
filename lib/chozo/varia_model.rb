@@ -267,7 +267,7 @@ module Chozo
       end
 
       def whitelist_assign(new_attrs = {})
-        attributes.dotted_paths.each do |dotted_path|
+        self.class.attributes.dotted_paths.each do |dotted_path|
           value = new_attrs.dig(dotted_path)
           next if value.nil?
 
