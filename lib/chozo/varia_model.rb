@@ -216,13 +216,14 @@ module Chozo
       self.attributes
     end
 
-    # @param [Hash] options
-    #   an options hash to pass to MultiJson.encode
+    # @option options [Boolean] :symbolize_keys
+    # @option options [Class, Symbol, String] :adapter
     #
     # @return [String]
     def to_json(options = {})
       MultiJson.encode(self.attributes, options)
     end
+    alias_method :as_json, :to_json
 
     protected
 
