@@ -1,5 +1,4 @@
 require 'chozo/errors'
-require 'chozo/varia_model'
 
 module Chozo
   module Config
