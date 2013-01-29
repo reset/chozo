@@ -9,7 +9,7 @@ describe Hash do
         subject.from_dotted_path("deep.nested.item").should be_a(Hash)
       end
 
-      it "a hash containing the nested keys" do
+      it "returns a hash containing the nested keys" do
         obj = subject.from_dotted_path("deep.nested.item")
 
         obj.should have_key("deep")
@@ -21,6 +21,12 @@ describe Hash do
         obj = subject.from_dotted_path("deep.nested.item")
 
         obj["deep"]["nested"]["item"].should be_nil
+      end
+
+      it "handles a symbol as the dotted path" do
+        obj = subject.from_dotted_path(:"a.b.c", "value")
+        
+        obj["a"]["b"]["c"].should == "value"
       end
 
       context "when given a seed value" do

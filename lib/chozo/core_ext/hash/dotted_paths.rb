@@ -31,15 +31,15 @@ class Hash
     #     }
     #   }
     #
-    # @param [String, Array] dotpath
-    # @param [Object] seed
-    # @param [Hash] target
+    # @param [String, Symbol, Array] dotpath
+    # @param [Object] seed (nil)
+    # @param [Hash] target (self.new)
     #
     # @return [Hash]
     def from_dotted_path(dotpath, seed = nil, target = self.new)
       case dotpath
-      when String
-        from_dotted_path(dotpath.split("."), seed)
+      when String, Symbol
+        from_dotted_path(dotpath.to_s.split("."), seed)
       when Array
         if dotpath.empty?
           return target
