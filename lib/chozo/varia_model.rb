@@ -196,6 +196,16 @@ module Chozo
       @errors ||= HashWithIndifferentAccess.new
     end
 
+    # Assigns the attributes of a model from a given hash of attributes.
+    #
+    # If the assignment mode is set to `:whitelist`, then only the values of keys which have a
+    # corresponding attribute definition on the model will be set. All other keys will have their
+    # values ignored.
+    #
+    # If the assignment mode is set to `:carefree`, then the attributes hash will be populated
+    # with any key/values that are provided.
+    #
+    # @param [Hash] new_attrs
     def mass_assign(new_attrs = {})
       case self.class.assignment_mode
       when :whitelist
