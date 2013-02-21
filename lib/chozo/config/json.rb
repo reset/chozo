@@ -52,7 +52,7 @@ module Chozo
       #
       # @return [Chozo::Config::JSON]
       def reload
-        mass_assign(self.class.from_file(path).attributes)
+        mass_assign(self.class.from_file(path).to_hash)
         self
       end
     end

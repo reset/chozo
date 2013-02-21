@@ -9,7 +9,7 @@ describe Chozo::Config::Abstract do
     end
 
     it "contains all of the attributes" do
-      subject.attributes[:something] = "value"
+      subject.set_attribute(:something, "value")
       
       subject.to_hash.should have_key(:something)
       subject.to_hash[:something].should eql("value")
@@ -18,12 +18,8 @@ describe Chozo::Config::Abstract do
 
   describe "#slice" do
     before(:each) do
-      subject.attributes[:one] = {
-        nested: "value"
-      }
-      subject.attributes[:two] = {
-        nested: "other"
-      }
+      subject.set_attribute(:one, nested: "value")
+      subject.set_attribute(:two, nested: "other")
       @sliced = subject.slice(:one)
     end
 

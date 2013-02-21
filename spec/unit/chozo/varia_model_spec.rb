@@ -43,11 +43,23 @@ describe Chozo::VariaModel do
 
         subject.attributes.dig('brooke.winsor').should eql('rhode island')
       end
+
+      it "allows an attribute called 'attributes'" do
+        subject.attribute 'attributes', default: 'bag of junk'
+
+        subject.attributes.dig('attributes').should eql('bag of junk')
+      end
+
+      it "allows an attribute called 'attribute'" do
+        subject.attribute 'attribute', default: 'some value'
+
+        subject.attributes.dig('attribute').should eql('some value')
+      end
     end
 
     describe "::validations" do
-      it "returns a HashWithIndifferentAccess" do
-        subject.validations.should be_a(HashWithIndifferentAccess)
+      it "returns a Hashie::Mash" do
+        subject.validations.should be_a(Hashie::Mash)
       end
 
       it "is empty by default" do
@@ -380,6 +392,25 @@ describe Chozo::VariaModel do
         subject.nested.two.should eql("2")
       end
     end
+
+    context "given an attribute called 'attributes'" do
+      subject do
+        Class.new do
+          include Chozo::VariaModel
+
+          attribute 'attributes', default: Hash.new
+        end.new
+      end
+
+      it "allows the setting and getting of the 'attributes' mimic methods" do
+        subject.attributes.should be_a(Hash)
+        subject.attributes.should be_empty
+
+        new_hash = { something: "here" }
+        subject.attributes = new_hash
+        subject.attributes[:something].should eql("here")
+      end
+    end
   end
 
   describe "Validations" do
@@ -524,7 +555,7 @@ describe Chozo::VariaModel do
       }
 
       subject.mass_assign(new_attrs)
-      subject.attributes[:undefined_attribute].should be_nil
+      subject.get_attribute(:undefined_attribute).should be_nil
       subject.should_not respond_to(:undefined_attribute)
     end
 
@@ -543,7 +574,7 @@ describe Chozo::VariaModel do
         }
 
         subject.mass_assign(new_attrs)
-        subject.attributes[:undefined_attribute].should eql("value")
+        subject.get_attribute(:undefined_attribute).should eql("value")
       end
     end
   end
@@ -611,8 +642,8 @@ describe Chozo::VariaModel do
   end
 
   describe "#to_hash" do
-    it "returns the attributes" do
-      subject.to_hash.should eql(subject.attributes)
+    it "returns all of the varia dattributes" do
+      subject.to_hash.should eql(subject.send(:p_attributes))
     end
   end
 end
