@@ -11,14 +11,14 @@ module Chozo
         :carefree
       ]
 
-      # @return [HashWithIndifferentAccess]
+      # @return [Hashie::Mash]
       def attributes
         @attributes ||= Hashie::Mash.new
       end
 
-      # @return [HashWithIndifferentAccess]
+      # @return [Hashie::Mash]
       def validations
-        @validations ||= HashWithIndifferentAccess.new
+        @validations ||= Hashie::Mash.new
       end
 
       # @return [Symbol]
@@ -73,7 +73,7 @@ module Chozo
         matches = false
 
         types.each do |type|
-          if model.attributes.dig(key).is_a?(type)
+          if model.get_attribute(key).is_a?(type)
             matches = true
             break
           end
@@ -94,7 +94,7 @@ module Chozo
       #
       # @return [Array]
       def validate_required(model, key)
-        if model.attributes.dig(key).nil?
+        if model.get_attribute(key).nil?
           [ :error, "A value is required for attribute: '#{key}'" ]
         else
           [ :ok, "" ]
@@ -138,7 +138,7 @@ module Chozo
           
           class_eval do
             define_method fun_name do
-              self.attributes[fun_name]
+              p_attributes[fun_name]
             end
 
             define_method "#{fun_name}=" do |value|
@@ -148,7 +148,7 @@ module Chozo
                 value
               end
 
-              self.attributes[fun_name] = value
+              p_attributes[fun_name] = value
             end
           end
         end
@@ -158,11 +158,6 @@ module Chozo
       def included(base)
         base.extend(ClassMethods)
       end
-    end
-
-    # @return [HashWithIndifferentAccess]
-    def attributes
-      @attributes ||= self.class.attributes.dup
     end
 
     # @return [HashWithIndifferentAccess]
@@ -214,20 +209,19 @@ module Chozo
         carefree_assign(new_attrs)
       end
     end
-    alias_method :attributes=, :mass_assign
 
     # @param [#to_s] key
     #
     # @return [Object]
     def get_attribute(key)
-      self.attributes.dig(key.to_s)
+      p_attributes.dig(key.to_s)
     end
     alias_method :[], :get_attribute
 
     # @param [#to_s] key
     # @param [Object] value
     def set_attribute(key, value)
-      self.attributes.deep_merge!(attributes.class.from_dotted_path(key.to_s, value))
+      p_attributes.deep_merge!(Hashie::Mash.from_dotted_path(key.to_s, value))
     end
     alias_method :[]=, :set_attribute
 
@@ -249,7 +243,7 @@ module Chozo
 
     # @return [Hash]
     def to_hash
-      self.attributes
+      p_attributes
     end
 
     # @option options [Boolean] :symbolize_keys
@@ -257,7 +251,7 @@ module Chozo
     #
     # @return [String]
     def to_json(options = {})
-      MultiJson.encode(self.attributes, options)
+      MultiJson.encode(p_attributes, options)
     end
     alias_method :as_json, :to_json
 
@@ -273,7 +267,7 @@ module Chozo
     private
 
       def carefree_assign(new_attrs = {})
-        attributes.deep_merge!(new_attrs)
+        p_attributes.deep_merge!(new_attrs)
       end
 
       def whitelist_assign(new_attrs = {})
@@ -283,6 +277,13 @@ module Chozo
 
           set_attribute(dotted_path, value)
         end
+      end
+
+      # The private storage hash containing all of the key/values for this object's attributes
+      #
+      # @return [Hashie::Mash]
+      def p_attributes
+        @p_attributes ||= self.class.attributes.dup
       end
   end
 end
