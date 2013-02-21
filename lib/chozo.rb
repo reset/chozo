@@ -1,5 +1,7 @@
 # @author Jamie Winsor <jamie@vialstudios.com>
 module Chozo
+  autoload :CleanRoom, 'chozo/clean_room'
+  autoload :CleanRoomBase, 'chozo/clean_room_base'
   autoload :Config, 'chozo/config'
   autoload :Errors, 'chozo/errors'
   autoload :Platform, 'chozo/platform'
