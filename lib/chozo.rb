@@ -4,6 +4,7 @@ module Chozo
   autoload :CleanRoomBase, 'chozo/clean_room_base'
   autoload :Config, 'chozo/config'
   autoload :Errors, 'chozo/errors'
+  autoload :Mixin, 'chozo/mixin'
   autoload :Platform, 'chozo/platform'
   autoload :RubyEngine, 'chozo/ruby_engine'
   autoload :VariaModel, 'chozo/varia_model'
