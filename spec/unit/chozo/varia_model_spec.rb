@@ -643,7 +643,7 @@ describe Chozo::VariaModel do
 
   describe "#to_hash" do
     it "returns all of the varia dattributes" do
-      subject.to_hash.should eql(subject.send(:p_attributes))
+      subject.to_hash.should eql(subject.send(:_attributes_))
     end
   end
 end
