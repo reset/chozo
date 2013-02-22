@@ -138,7 +138,7 @@ module Chozo
           
           class_eval do
             define_method fun_name do
-              p_attributes[fun_name]
+              _attributes_[fun_name]
             end
 
             define_method "#{fun_name}=" do |value|
@@ -148,7 +148,7 @@ module Chozo
                 value
               end
 
-              p_attributes[fun_name] = value
+              _attributes_[fun_name] = value
             end
           end
         end
@@ -214,14 +214,14 @@ module Chozo
     #
     # @return [Object]
     def get_attribute(key)
-      p_attributes.dig(key.to_s)
+      _attributes_.dig(key.to_s)
     end
     alias_method :[], :get_attribute
 
     # @param [#to_s] key
     # @param [Object] value
     def set_attribute(key, value)
-      p_attributes.deep_merge!(Hashie::Mash.from_dotted_path(key.to_s, value))
+      _attributes_.deep_merge!(Hashie::Mash.from_dotted_path(key.to_s, value))
     end
     alias_method :[]=, :set_attribute
 
@@ -241,17 +241,20 @@ module Chozo
       self
     end
 
-    # @return [Hash]
-    def to_hash
-      p_attributes
+    # The storage hash containing all of the key/values for this object's attributes
+    #
+    # @return [Hashie::Mash]
+    def _attributes_
+      @_attributes_ ||= self.class.attributes.dup
     end
+    alias_method :to_hash, :_attributes_
 
     # @option options [Boolean] :symbolize_keys
     # @option options [Class, Symbol, String] :adapter
     #
     # @return [String]
     def to_json(options = {})
-      MultiJson.encode(p_attributes, options)
+      MultiJson.encode(_attributes_, options)
     end
     alias_method :as_json, :to_json
 
@@ -267,7 +270,7 @@ module Chozo
     private
 
       def carefree_assign(new_attrs = {})
-        p_attributes.deep_merge!(new_attrs)
+        _attributes_.deep_merge!(new_attrs)
       end
 
       def whitelist_assign(new_attrs = {})
@@ -277,13 +280,6 @@ module Chozo
 
           set_attribute(dotted_path, value)
         end
-      end
-
-      # The private storage hash containing all of the key/values for this object's attributes
-      #
-      # @return [Hashie::Mash]
-      def p_attributes
-        @p_attributes ||= self.class.attributes.dup
       end
   end
 end
